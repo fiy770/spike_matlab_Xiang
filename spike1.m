@@ -51,7 +51,7 @@ Tspike_ref	=1;
 % Vlk_sim(a,b)=0;
 Ith 	=I0*exp((K*Vthr)/Ut) %I0*exp((K*Vthr)/Ut)%Iin*percent*percent2;Iin*percent2(b);%Iin*percent(a)*percent2(b);	%
 % Vthr_sim(a,b)=(Ut/K)*log((Ith)/I0);
-Itau	=I0*exp((K*Vlk)/Ut)%I0*exp((K*Vlk)/Ut)%Iin*0.1*percent;%Iin*0.1*percent(a);	%
+Itau	=7e-9%I0*exp((K*Vlk)/Ut)%I0*exp((K*Vlk)/Ut)%Iin*0.1*percent;%Iin*0.1*percent(a);	%
 % Vlk_sim(a,b)=(Ut/K)*log((Itau)/I0);
 Tau		=(Cmem*Ut)/(K*Itau);
 % %adaptation para:
@@ -65,7 +65,7 @@ Tau		=(Cmem*Ut)/(K*Itau);
 % for in=1:length(Iin2)
     Iin=20e-9%Iin2(in)
 %for k=1:length(Iahp)
-    Iahp=1.4295e-9;
+    Iahp=0;
 for j=2:length(t)
 	if Imem(j-1)<I0mem
             Imem(j) = I0mem;
@@ -101,13 +101,15 @@ spikes   = sptimes(sptimes>0);
 %      end
 %  end
  figure(1)
-% % subplot(8,1,1:3)
+ subplot(8,1,1:3)
  plot(t, Vmem*10^3)
  title('Exponential IF neuron')
  ylabel('Vmem (mV)')	
  xlabel('Time (s)')	
-% figure(2)
-% plot(t, Vahp);
+ figure(2)
+ plot(t, Imem*10^9);
+ ylabel('nA')
+ axis([0,inf,0,20])
 % figure(3)
 %plot(t, Iahp)
 %figure(2)
