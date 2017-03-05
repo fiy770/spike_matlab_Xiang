@@ -16,17 +16,18 @@ Vr      = 0;              %reset Vmem(
 Vs      = 0.6;
 % Time settings
 dt   = 5e-7;            % time step 5us
-tmax = 0.1;               % simulation time
+tmax = 1;               % simulation time
 t    = 0:dt:tmax;       % time step vector
 % Circuit voltages
-Vlk		=0.3%0.2073;
-Vthr	=0.25%0.293;
+Vlk		=0.2607%0.2073;
+Vthr	=0.3027%0.293;
 Cp      = 5e-13;  %-----         % Capacitor of adaptation circuit'
 Cmem    = 1e-12;  %-----         % Membrane capacitance of the neuron cell
 
 sptimes    = zeros(1,length(t)-1);
 %Iahp 	   = zeros(1,length(t));
 Vahp 	   = zeros(1,length(t));
+DImem      = zeros(1,length(t));
 Imem       = zeros(1,length(t)); 
 Vmem       = zeros(1,length(t)); 
 Ia         = zeros(1,length(t));
@@ -51,7 +52,7 @@ Tspike_ref	=1;
 % Vlk_sim(a,b)=0;
 Ith 	=I0*exp((K*Vthr)/Ut) %I0*exp((K*Vthr)/Ut)%Iin*percent*percent2;Iin*percent2(b);%Iin*percent(a)*percent2(b);	%
 % Vthr_sim(a,b)=(Ut/K)*log((Ith)/I0);
-Itau	=7e-9%I0*exp((K*Vlk)/Ut)%I0*exp((K*Vlk)/Ut)%Iin*0.1*percent;%Iin*0.1*percent(a);	%
+Itau	=I0*exp((K*Vlk)/Ut)%I0*exp((K*Vlk)/Ut)%Iin*0.1*percent;%Iin*0.1*percent(a);	%7e-9%
 % Vlk_sim(a,b)=(Ut/K)*log((Itau)/I0);
 Tau		=(Cmem*Ut)/(K*Itau);
 % %adaptation para:
@@ -73,9 +74,10 @@ for j=2:length(t)
 %             Iahp(j)	=0;
 	end
 	if Vmem(j-1) < Vp
-		Ia(j-1)=0.5*Imem(j-1);%I0*exp((Ka*Vmem(j-1))/Ut);	%positive feedback current
+		Ia(j-1)=0.01*Imem(j-1);%I0*exp((Ka*Vmem(j-1))/Ut);	%positive feedback current
 % 		Iahp(j)=Iahp(j-1)-(dt/Tau2)*(Iahp(j-1));
-        Imem(j)=Imem(j-1)+(((Ith/Itau)*(Iin-Iahp-Itau)+((Ia(j-1)/Itau)-1-(Iahp/Itau))*Imem(j-1)+(Ia(j-1)/Itau)*Ith)*(dt/(Tau*(1+(Ith/Imem(j-1))))));
+        DImem(j)=(((Ith/Itau)*(Iin-Iahp-Itau)+((Ia(j-1)/Itau)-1-(Iahp/Itau))*Imem(j-1)+(Ia(j-1)/Itau)*Ith)*(dt/(Tau*(1+(Ith/Imem(j-1))))));
+        Imem(j)=Imem(j-1)+DImem(j);%(((Ith/Itau)*(Iin-Iahp-Itau)+((Ia(j-1)/Itau)-1-(Iahp/Itau))*Imem(j-1)+(Ia(j-1)/Itau)*Ith)*(dt/(Tau*(1+(Ith/Imem(j-1))))));
 % 		Imem(j)=Imem(j-1)+(((Ith/Itau)*(Iin-Iahp(j-1)-Itau)+((Ia(j-1)/Itau)-1-(Iahp(j-1)/Itau))*Imem(j-1)+(Ia(j-1)/Itau)*Ith)*(dt/(Tau*(1+(Ith/Imem(j-1))))));
 %		Imem(j)=Imem(j-1)+(((Ith/Itau)*(Iin-0-Itau)+((Ia(j-1)/Itau)-1-(0/Itau))*Imem(j-1)+(Ia(j-1)/Itau)*Ith)*(dt/(Tau*(1+(Ith/Imem(j-1))))));
 %       Vmem(j)=(Ut/K)*log((Imem(j))/I0);
@@ -85,7 +87,7 @@ for j=2:length(t)
         Vmem(j-1)   = Vp;
         Vmem(j)		= Vr;    
 		Imem(j)		= I0mem;
-		Ia(j-1) 	= 0.5*Imem(j);%I0*exp((Ka*Vmem(j-1))/Ut);
+		Ia(j-1) 	= 0.01*Imem(j);%I0*exp((Ka*Vmem(j-1))/Ut);
 %  		Iahp(j)=Iahp(j-1)+(dt/Tau2)*((Ith_ahp/Itau_ahp)*Ica-Iahp(j-1));
 %  		Vahp(j)=(Ut/K)*log((Iahp(j))/I0);
 		Tspike 		=j-1- Tspike_ref;
@@ -109,7 +111,7 @@ spikes   = sptimes(sptimes>0);
  figure(2)
  plot(t, Imem*10^9);
  ylabel('nA')
- axis([0,inf,0,20])
+ axis([0,10e-4,0,inf])
 % figure(3)
 %plot(t, Iahp)
 %figure(2)
