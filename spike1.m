@@ -20,7 +20,7 @@ tmax = 1;               % simulation time
 t    = 0:dt:tmax;       % time step vector
 % Circuit voltages
 Vlk		=0.2607%0.2607%0.2073;
-Vthr	=0.2762%0.3027%0.293;
+Vthr	=0.2078%0.3027%0.293;
 Cp      = 5e-13;  %-----         % Capacitor of adaptation circuit'
 Cmem    = 1e-12;  %-----         % Membrane capacitance of the neuron cell
 
@@ -64,7 +64,7 @@ Tau		=(Cmem*Ut)/(K*Itau);
 % Tau2	=(Cp*Ut)/(K*Itau_ahp);
 % Frequ(a,b)=0;
 % for in=1:length(Iin2)
-    Iin=4.45e-9%Iin2(in)
+    Iin=6.5e-9%Iin2(in)
 %for k=1:length(Iahp)
     Iahp=0;
 for j=2:length(t)
@@ -74,7 +74,7 @@ for j=2:length(t)
 %             Iahp(j)	=0;
 	end
 	if Vmem(j-1) < Vp
-		Ia(j-1)=0.1*Imem(j-1);%I0*exp((Ka*Vmem(j-1))/Ut);	%positive feedback current
+		Ia(j-1)=0.5*Imem(j-1);%I0*exp((Ka*Vmem(j-1))/Ut);	%positive feedback current
 % 		Iahp(j)=Iahp(j-1)-(dt/Tau2)*(Iahp(j-1));
         DImem(j)=(((Ith/Itau)*(Iin-Iahp-Itau)+((Ia(j-1)/Itau)-1-(Iahp/Itau))*Imem(j-1)+(Ia(j-1)/Itau)*Ith)*(dt/(Tau*(1+(Ith/Imem(j-1))))));
         Imem(j)=Imem(j-1)+DImem(j);%(((Ith/Itau)*(Iin-Iahp-Itau)+((Ia(j-1)/Itau)-1-(Iahp/Itau))*Imem(j-1)+(Ia(j-1)/Itau)*Ith)*(dt/(Tau*(1+(Ith/Imem(j-1))))));
@@ -87,7 +87,7 @@ for j=2:length(t)
         Vmem(j-1)   = Vp;
         Vmem(j)		= Vr;    
 		Imem(j)		= I0mem;
-		Ia(j-1) 	= 0.1*Imem(j);%I0*exp((Ka*Vmem(j-1))/Ut);
+		Ia(j-1) 	= 0.5*Imem(j);%I0*exp((Ka*Vmem(j-1))/Ut);
 %  		Iahp(j)=Iahp(j-1)+(dt/Tau2)*((Ith_ahp/Itau_ahp)*Ica-Iahp(j-1));
 %  		Vahp(j)=(Ut/K)*log((Iahp(j))/I0);
 		Tspike 		=j-1- Tspike_ref;
